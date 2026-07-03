@@ -56,6 +56,33 @@ echo 'export PI_HTML_OUTPUT_DIR="/path/to/your/output"' >> ~/.bashrc
 
 Then restart Pi or run `/reload`.
 
+### Windows / WSL users
+
+If you're running Pi inside WSL (Windows Subsystem for Linux), the output path
+will look like `/mnt/c/Users/You/Documents/Pi Output/file.html`. This path is
+correct for file writes but won't work as a clickable link from Windows.
+
+To get a working `file://` link, add this to `~/.pi/agent/settings.json`:
+
+```json
+{
+  ...
+  "htmlOutputDir": "/mnt/c/Users/YourName/Documents/Pi Output",
+  "htmlOutputFileUri": "file:///C:/Users/YourName/Documents/Pi%20Output/{filename}"
+}
+```
+
+The `{filename}` placeholder is replaced automatically. With this set, the
+agent will report a clickable link like:
+
+```
+file:///C:/Users/YourName/Documents/Pi%20Output/sql-vs-nosql-social-media.html
+```
+
+**Tip:** If you change `htmlOutputDir`, update `htmlOutputFileUri` to match —
+the WSL path (`/mnt/c/...`) and the Windows URI (`file:///C:/...`) are two
+representations of the same location.
+
 ## How It Works
 
 ### Skill structure

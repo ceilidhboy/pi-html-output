@@ -27,6 +27,48 @@ Resolve the output directory using this fallback chain:
 
 Name files descriptively, e.g. `oauth-flows-explainer.html`.
 
+### Presenting the result
+
+When the file is written, present the clickable link to the user on its own
+line, prefixed with the pointing-finger emoji:
+
+👉 **`file:///C:/Users/YourName/Documents/Pi%20Output/filename.html`**
+
+- If `htmlOutputFileUri` is set, construct the link by replacing `{filename}`
+  with the actual filename, then present it as above.
+- If `htmlOutputFileUri` is not set, present the raw filesystem path instead:
+
+👉 **`/home/user/output/filename.html`**
+
+This format is mandatory — every agent invoking this skill must use the
+👉 emoji before the file link in its response. This applies universally
+across all users, platforms, and sessions.
+
+### Windows / WSL file:// URIs
+
+On Windows with WSL, the resolved path (e.g. `/mnt/c/Users/...`) is correct for
+file operations but won't work as a clickable link. To produce a working
+`file://` URI in the agent's response, add this optional setting:
+
+```json
+"htmlOutputFileUri": "file:///C:/Users/YourName/Documents/Pi%20Output/{filename}"
+```
+
+in `~/.pi/agent/settings.json`. The placeholder `{filename}` is replaced with
+the actual output filename. When this setting is present, the agent reports a
+clickable link instead of the raw filesystem path.
+
+**Setup instructions for Pi agents:** When a user says "set up HTML output"
+or "I'm on Windows/WSL and the links don't work", do this:
+
+1. Check if `htmlOutputDir` is already set in `~/.pi/agent/settings.json`
+2. Convert the WSL path to a Windows `file://` URI path:
+   - `/mnt/c/...` → `file:///C:/...`
+   - `/mnt/d/...` → `file:///D:/...`
+   - Replace spaces with `%20`
+3. Append `/{filename}` and write it as `htmlOutputFileUri`
+4. Note the change to the user so they know what was set
+
 ## Decision Heuristic
 
 > *"Would the human reader get more understanding from **seeing** this than from **reading** it?"*
