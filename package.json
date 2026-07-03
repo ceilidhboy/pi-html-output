@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourname/pi-html-output.git"
+    "url": "git+https://github.com/ceilidhboy/pi-html-output.git"
   },
   "pi": {
     "skills": ["./skills"]
