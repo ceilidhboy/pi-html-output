@@ -1,0 +1,14 @@
+{
+  "name": "pi-html-output",
+  "version": "1.0.0",
+  "description": "HTML output for Pi — generate beautiful, self-contained HTML documents instead of Markdown, with inline SVG diagrams, color swatches, comparison grids, and interactive controls.",
+  "keywords": ["pi-package", "html", "documentation", "visualization"],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourname/pi-html-output.git"
+  },
+  "pi": {
+    "skills": ["./skills"]
+  }
+}
