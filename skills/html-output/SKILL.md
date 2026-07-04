@@ -48,25 +48,49 @@ across all users, platforms, and sessions.
 
 On Windows with WSL, the resolved path (e.g. `/mnt/c/Users/...`) is correct for
 file operations but won't work as a clickable link. To produce a working
-`file://` URI in the agent's response, add this optional setting:
+`file://` URI in the agent's response, use one of these settings in
+`~/.pi/agent/settings.json`:
+
+#### Option A: `htmlOutputFileUri` (filename template)
 
 ```json
 "htmlOutputFileUri": "file:///C:/Users/YourName/Documents/Pi%20Output/{filename}"
 ```
 
-in `~/.pi/agent/settings.json`. The placeholder `{filename}` is replaced with
-the actual output filename. When this setting is present, the agent reports a
-clickable link instead of the raw filesystem path.
+The placeholder `{filename}` is replaced with the actual output filename. When
+this setting is present, the agent reports a clickable link instead of the raw
+filesystem path.
+
+#### Option B: `htmlOutputFileUriPrefix` (WSL path prefix)
+
+```json
+"htmlOutputFileUriPrefix": "file://wsl.localhost/Ubuntu-24.04"
+```
+
+When this setting is present, the agent presents the link as:
+
+👉 **`{prefix}/home/.../full/filesystem/path/to/filename.html`**
+
+Where `{prefix}` is the value of `htmlOutputFileUriPrefix`. The agent appends
+the full filesystem path (from `/home` onwards) to the prefix to form the
+clickable WSL link.
+
+Prefer this option when the project files live directly on the WSL filesystem
+and don't have a C: drive equivalent. The agent outputs the HTML file to the
+project's `docs/adr/html/` directory (not to a separate Pi Output directory).
 
 **Setup instructions for Pi agents:** When a user says "set up HTML output"
 or "I'm on Windows/WSL and the links don't work", do this:
 
 1. Check if `htmlOutputDir` is already set in `~/.pi/agent/settings.json`
-2. Convert the WSL path to a Windows `file://` URI path:
-   - `/mnt/c/...` → `file:///C:/...`
-   - `/mnt/d/...` → `file:///D:/...`
+2. If using a C: drive path:
+   - Convert `/mnt/c/...` → `file:///C:/...`
    - Replace spaces with `%20`
-3. Append `/{filename}` and write it as `htmlOutputFileUri`
+   - Append `/{filename}` and write it as `htmlOutputFileUri`
+3. If using WSL native paths:
+   - Get the WSL distro name from the user (e.g. `Ubuntu-24.04`)
+   - Write `"htmlOutputFileUriPrefix": "file://wsl.localhost/{distro}"`
+   - The agent will append the full filesystem path from `/home` onwards
 4. Note the change to the user so they know what was set
 
 ## Decision Heuristic
